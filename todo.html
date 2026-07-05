@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투두리스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+
+        .todo-item.completed span {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        .delete-btn:hover {
+            background: #ee5a52;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 내 투두리스트</h1>
+
+        <div class="input-group">
+            <input type="text" id="todoInput" placeholder="할 일을 입력하세요..." autocomplete="off">
+            <button onclick="addTodo()">추가</button>
+        </div>
+
+        <ul class="todo-list" id="todoList"></ul>
+        <div class="empty-message" id="emptyMessage">
+            아직 등록된 할 일이 없습니다. 첫 번째 작업을 추가해보세요! ✨
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-number" id="totalCount">0</span>
+                <span>전체</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="completedCount">0</span>
+                <span>완료</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="remainCount">0</span>
+                <span>남은 일</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const todoInput = document.getElementById('todoInput');
+        const todoList = document.getElementById('todoList');
+        const emptyMessage = document.getElementById('emptyMessage');
+
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text === '') {
+                alert('할 일을 입력해주세요!');
+                return;
+            }
+
+            const item = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+
+            saveTodo(item);
+            renderTodos();
+            todoInput.value = '';
+            todoInput.focus();
+        }
+
+        function deleteTodo(id) {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            const filtered = todos.filter(todo => todo.id !== id);
+            localStorage.setItem('todos', JSON.stringify(filtered));
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                localStorage.setItem('todos', JSON.stringify(todos));
+                renderTodos();
+            }
+        }
+
+        function saveTodo(item) {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todos.push(item);
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
+        function renderTodos() {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todoList.innerHTML = '';
+
+            if (todos.length === 0) {
+                emptyMessage.style.display = 'block';
+            } else {
+                emptyMessage.style.display = 'none';
+                todos.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                    li.innerHTML = `
+                        <input type="checkbox" ${todo.completed ? 'checked' : ''}
+                               onchange="toggleTodo(${todo.id})">
+                        <span class="todo-text">${escapeHtml(todo.text)}</span>
+                        <button class="delete-btn" onclick="deleteTodo(${todo.id})">삭제</button>
+                    `;
+                    todoList.appendChild(li);
+                });
+            }
+
+            updateStats(todos);
+        }
+
+        function updateStats(todos) {
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const remain = total - completed;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('remainCount').textContent = remain;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+
+        renderTodos();
+    </script>
+</body>
+</html>

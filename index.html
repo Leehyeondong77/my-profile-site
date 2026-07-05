@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>양지훈 - Web Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Noto Sans KR', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0d0221 0%, #1a103a 100%);
+            background-attachment: fixed;
+            color: #e2e8f0;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+
+        .nav-scrolled {
+            background: rgba(13, 2, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        /* Hero */
+        .hero-text {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #8b5cf6;
+            margin-left: 2px;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* Painting SVG */
+        .hero-painting {
+            filter: drop-shadow(0 20px 40px rgba(139, 92, 246, 0.35))
+                    drop-shadow(0 4px 12px rgba(139, 92, 246, 0.2));
+            animation: paintFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes paintFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Cards */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(139, 92, 246, 0.4);
+            border-radius: 12px;
+            transition: all 0.4s ease;
+            box-shadow:
+                0 4px 6px rgba(139, 92, 246, 0.08),
+                0 12px 24px rgba(139, 92, 246, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(59, 130, 246, 0.14) 100%);
+            border-color: rgba(139, 92, 246, 0.7);
+            transform: translateY(-6px);
+            box-shadow:
+                0 8px 16px rgba(139, 92, 246, 0.15),
+                0 20px 40px rgba(139, 92, 246, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* Section divider */
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.35), transparent);
+            margin-bottom: 0;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-badge:hover {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: #8b5cf6;
+            transform: scale(1.05);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            padding: 11px 26px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.45);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #8b5cf6, transparent);
+            border-radius: 2px;
+        }
+
+        .scroll-arrow { animation: bounce 2s infinite; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        /* Fixed footer */
+        footer {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 40;
+            background: rgba(13, 2, 33, 0.92);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        /* Body bottom padding so footer doesn't overlap content */
+        body { padding-bottom: 56px; }
+
+        /* Scroll-to-top button */
+        #scroll-top-btn {
+            position: fixed;
+            bottom: 64px;
+            right: 24px;
+            z-index: 45;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.45);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        #scroll-top-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #scroll-top-btn:hover {
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.65);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav id="main-nav" class="w-full px-6 md:px-12 py-4 flex items-center justify-end">
+        <div class="hidden md:flex gap-8 items-center">
+            <a href="#about" class="text-gray-300 hover:text-violet-400 transition text-sm">About</a>
+            <a href="#skills" class="text-gray-300 hover:text-violet-400 transition text-sm">Skills</a>
+            <a href="#projects" class="text-gray-300 hover:text-violet-400 transition text-sm">Projects</a>
+            <a href="#contact" class="text-gray-300 hover:text-violet-400 transition text-sm">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section: 2-column -->
+    <section class="flex flex-col justify-center px-6 md:px-12 pt-20 pb-6">
+        <div class="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+
+            <!-- Left: Text -->
+            <div class="flex-1 text-center lg:text-left order-2 lg:order-1">
+                <h1 class="hero-text text-violet-400 mb-4">
+                    양<span style="font-size:2rem; margin:0 6px; vertical-align:middle;">✨</span>훈
+                </h1>
+                <div class="text-xl md:text-2xl font-light mb-5 h-12 flex items-center justify-center lg:justify-start">
+                    <span id="typing-text" class="text-gray-200"></span>
+                    <span class="typing-cursor"></span>
+                </div>
+                <p class="text-gray-400 text-base max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
+                    모던한 웹 기술로 문제를 해결하는 개발자입니다
+                </p>
+                <div class="flex gap-3 justify-center lg:justify-start flex-wrap">
+                    <a href="#about" class="cta-button">프로필 보기</a>
+                    <a href="#contact" class="cta-button" style="background: rgba(139,92,246,0.2); border:1px solid #8b5cf6; color:#a78bfa;">연락처</a>
+                </div>
+            </div>
+
+            <!-- Right: SVG Painting (reference art style) -->
+            <div class="flex-1 flex justify-center items-center order-1 lg:order-2">
+                <svg class="hero-painting w-full max-w-lg" viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="gradSky" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1e1b4b"/>
+                            <stop offset="50%" stop-color="#2e2683"/>
+                            <stop offset="100%" stop-color="#3730a3"/>
+                        </linearGradient>
+                        <linearGradient id="gradField" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#064e3b"/>
+                            <stop offset="100%" stop-color="#10b981"/>
+                        </linearGradient>
+                        <linearGradient id="gradMtnBack" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1e3a8a"/>
+                            <stop offset="100%" stop-color="#2563eb"/>
+                        </linearGradient>
+                        <linearGradient id="gradMtnFront" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1e1b4b"/>
+                            <stop offset="100%" stop-color="#312e81"/>
+                        </linearGradient>
+                        <clipPath id="paintClip">
+                            <rect x="26" y="26" width="352" height="242" rx="3"/>
+                        </clipPath>
+                    </defs>
+
+                    <!-- Frame drop shadow -->
+                    <rect x="20" y="20" width="364" height="256" rx="10"
+                          fill="rgba(139,92,246,0.25)" transform="translate(8,8)"/>
+
+                    <!-- Outer frame border -->
+                    <rect x="12" y="12" width="380" height="264" rx="10"
+                          fill="rgba(13,2,33,0.6)" stroke="#8b5cf6" stroke-width="6"/>
+
+                    <!-- Inner frame line -->
+                    <rect x="22" y="22" width="360" height="244" rx="5"
+                          fill="none" stroke="rgba(139,92,246,0.5)" stroke-width="2"/>
+
+                    <!-- Frame corner accents (L-shapes like reference) -->
+                    <g stroke="#a78bfa" stroke-width="3" stroke-linecap="round" fill="none">
+                        <polyline points="12,32 12,12 32,12"/>
+                        <polyline points="360,12 392,12 392,32"/>
+                        <polyline points="12,256 12,276 32,276"/>
+                        <polyline points="360,276 392,276 392,256"/>
+                    </g>
+
+                    <!-- Painting content clipped inside frame -->
+                    <g clip-path="url(#paintClip)">
+                        <!-- Sky -->
+                        <rect x="26" y="26" width="352" height="242" fill="url(#gradSky)"/>
+
+                        <!-- Cloud shapes -->
+                        <ellipse cx="100" cy="65" rx="60" ry="20" fill="rgba(180,200,255,0.18)"/>
+                        <ellipse cx="210" cy="55" rx="75" ry="18" fill="rgba(180,200,255,0.15)"/>
+                        <ellipse cx="320" cy="68" rx="65" ry="22" fill="rgba(180,200,255,0.12)"/>
+                        <path d="M 50 80 Q 130 58 220 75 Q 300 90 370 62"
+                              stroke="rgba(147,197,253,0.25)" stroke-width="3" fill="none"/>
+
+                        <!-- Back mountains (blue) -->
+                        <polygon points="26,210 110,85 195,155 275,75 360,135 378,165 378,210"
+                                 fill="url(#gradMtnBack)" opacity="0.8"/>
+
+                        <!-- Front mountains (deep indigo) -->
+                        <polygon points="26,220 90,130 160,180 235,110 305,165 378,130 378,220"
+                                 fill="url(#gradMtnFront)" opacity="0.95"/>
+
+                        <!-- Trees -->
+                        <g fill="#14532d">
+                            <rect x="120" y="182" width="7" height="38"/>
+                            <rect x="148" y="185" width="6" height="35"/>
+                            <rect x="99" y="186" width="6" height="34"/>
+                            <rect x="174" y="188" width="5" height="32"/>
+                        </g>
+                        <polygon points="104,185 123,140 142,185" fill="#15803d"/>
+                        <polygon points="130,187 152,144 174,187" fill="#166534"/>
+                        <polygon points="85,188 103,148 121,188" fill="#16a34a"/>
+                        <polygon points="160,190 178,150 196,190" fill="#15803d"/>
+
+                        <!-- Church / Building -->
+                        <rect x="196" y="170" width="28" height="50" fill="rgba(255,255,255,0.22)"/>
+                        <polygon points="190,172 210,150 230,172" fill="rgba(139,92,246,0.55)"/>
+                        <line x1="210" y1="142" x2="210" y2="150" stroke="rgba(255,255,255,0.7)" stroke-width="2.5"/>
+                        <line x1="206" y1="146" x2="214" y2="146" stroke="rgba(255,255,255,0.7)" stroke-width="2.5"/>
+                        <rect x="204" y="188" width="10" height="12" fill="rgba(0,0,0,0.3)"/>
+
+                        <!-- Field (emerald) -->
+                        <rect x="26" y="205" width="352" height="63" fill="url(#gradField)"/>
+
+                        <!-- Field texture: dots -->
+                        <g fill="rgba(255,255,255,0.3)">
+                            <circle cx="55"  cy="222" r="4"/><circle cx="95"  cy="233" r="3"/>
+                            <circle cx="145" cy="218" r="4"/><circle cx="195" cy="228" r="3"/>
+                            <circle cx="245" cy="220" r="4"/><circle cx="295" cy="230" r="3"/>
+                            <circle cx="340" cy="222" r="4"/><circle cx="370" cy="228" r="3"/>
+                            <circle cx="75"  cy="244" r="3"/><circle cx="130" cy="248" r="4"/>
+                            <circle cx="185" cy="242" r="3"/><circle cx="240" cy="248" r="4"/>
+                            <circle cx="295" cy="243" r="3"/><circle cx="355" cy="246" r="3"/>
+                        </g>
+                        <!-- Field texture: dashes -->
+                        <g stroke="rgba(0,0,0,0.35)" stroke-width="2" stroke-linecap="round">
+                            <line x1="45"  y1="215" x2="68"  y2="215"/>
+                            <line x1="108" y1="225" x2="136" y2="225"/>
+                            <line x1="168" y1="218" x2="198" y2="218"/>
+                            <line x1="220" y1="232" x2="250" y2="232"/>
+                            <line x1="275" y1="221" x2="305" y2="221"/>
+                            <line x1="328" y1="227" x2="358" y2="227"/>
+                        </g>
+                    </g>
+
+                    <!-- Decorative wave arcs outside frame (KEY element from reference) -->
+                    <g stroke="rgba(139,92,246,0.6)" fill="none" stroke-linecap="round">
+                        <path d="M 392 50  Q 450 95  428 158 Q 412 200 440 252" stroke-width="2.5"/>
+                        <path d="M 392 70  Q 462 118 436 188 Q 418 234 450 286" stroke-width="2"/>
+                        <path d="M 392 92  Q 475 140 446 218 Q 428 262 462 308" stroke-width="1.5"/>
+                        <path d="M 392 115 Q 488 162 456 248" stroke-width="1.5"/>
+                        <path d="M 392 140 Q 505 188 468 280" stroke-width="1"/>
+                    </g>
+
+                    <!-- Bottom label (like reference "Kosovski božuri 1913") -->
+                    <rect x="12" y="296" width="160" height="32" rx="5"
+                          fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)" stroke-width="1.2"/>
+                    <text x="26" y="317" font-family="'Noto Sans KR', cursive" font-size="13"
+                          fill="#6ee7b7" font-style="italic">훈's 포트폴리오</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Scroll arrow -->
+        <div class="flex justify-center mt-6 scroll-arrow">
+            <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- About Section -->
+    <section id="about" class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="section-title text-white mb-8">About Me</h2>
+
+            <div class="card p-8 mb-6 fade-in-up">
+                <p class="text-base leading-relaxed text-gray-200 mb-4">짐코딩 과제 수행중입니다</p>
+                <p class="text-base leading-relaxed text-gray-200 mb-4">완강을 향해 달려보겠습니다.</p>
+                <p class="text-base leading-relaxed text-gray-200 mb-4">회사에서 사용하니 다시 열정이 살아났습니다.</p>
+                <p class="text-base leading-relaxed text-gray-200">제대로 배워서 제대로 사용하겠습니다.</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-violet-400/10 to-emerald-400/10 border border-violet-400/30 rounded-xl p-5 fade-in-up">
+                <p class="text-sm text-gray-300">
+                    <span class="text-violet-400 font-semibold">✨ 웹 개발자로서</span>
+                    사용자 경험을 우선하고 효율적인 솔루션을 추구합니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-white mb-8">기술 스택</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                <div class="card p-6 text-center fade-in-up">
+                    <div class="text-4xl mb-3">☕</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Java</h3>
+                    <p class="text-gray-400 text-xs">백엔드 개발 및 서버 애플리케이션 구축</p>
+                </div>
+                <div class="card p-6 text-center fade-in-up">
+                    <div class="text-4xl mb-3">⚡</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">JavaScript</h3>
+                    <p class="text-gray-400 text-xs">프론트엔드 로직 및 동적 사용자 인터페이스</p>
+                </div>
+                <div class="card p-6 text-center fade-in-up">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">jQuery</h3>
+                    <p class="text-gray-400 text-xs">DOM 조작 및 이벤트 처리 최적화</p>
+                </div>
+                <div class="card p-6 text-center fade-in-up">
+                    <div class="text-4xl mb-3">🌱</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Spring</h3>
+                    <p class="text-gray-400 text-xs">엔터프라이즈 웹 애플리케이션 프레임워크</p>
+                </div>
+                <div class="card p-6 text-center fade-in-up">
+                    <div class="text-4xl mb-3">⚙️</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Spring Boot</h3>
+                    <p class="text-gray-400 text-xs">빠른 개발 및 마이크로서비스 구축</p>
+                </div>
+                <div class="card p-6 text-center fade-in-up">
+                    <div class="text-4xl mb-3">🗄️</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Oracle</h3>
+                    <p class="text-gray-400 text-xs">데이터베이스 관리 및 쿼리 최적화</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 justify-center fade-in-up">
+                <span class="skill-badge">Java</span>
+                <span class="skill-badge">JavaScript</span>
+                <span class="skill-badge">jQuery</span>
+                <span class="skill-badge">Spring</span>
+                <span class="skill-badge">Spring Boot</span>
+                <span class="skill-badge">Oracle</span>
+                <span class="skill-badge">HTML/CSS</span>
+                <span class="skill-badge">Responsive Design</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-white mb-8">프로젝트 & 포트폴리오</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="card overflow-hidden fade-in-up">
+                    <div class="bg-gradient-to-br from-blue-500 to-violet-600 h-36 flex items-center justify-center">
+                        <span class="text-4xl">🌐</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-semibold text-white mb-2">Responsive Web Portfolio</h3>
+                        <p class="text-gray-400 text-xs mb-3">HTML, CSS, JavaScript를 활용한 반응형 웹사이트</p>
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">HTML</span>
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">CSS</span>
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">JS</span>
+                        </div>
+                        <a href="#" class="text-violet-400 hover:text-violet-300 text-xs font-medium">자세히 보기 →</a>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden fade-in-up">
+                    <div class="bg-gradient-to-br from-violet-500 to-purple-600 h-36 flex items-center justify-center">
+                        <span class="text-4xl">⚙️</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-semibold text-white mb-2">Interactive UI Dashboard</h3>
+                        <p class="text-gray-400 text-xs mb-3">jQuery를 사용한 동적 UI 컴포넌트 개발</p>
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">jQuery</span>
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">JavaScript</span>
+                        </div>
+                        <a href="#" class="text-violet-400 hover:text-violet-300 text-xs font-medium">자세히 보기 →</a>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden fade-in-up">
+                    <div class="bg-gradient-to-br from-emerald-500 to-teal-600 h-36 flex items-center justify-center">
+                        <span class="text-4xl">💾</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-semibold text-white mb-2">Enterprise Backend API</h3>
+                        <p class="text-gray-400 text-xs mb-3">Spring Boot 백엔드 및 Oracle 데이터베이스 개발</p>
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">Spring Boot</span>
+                            <span class="text-xs bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded">Oracle</span>
+                        </div>
+                        <a href="#" class="text-violet-400 hover:text-violet-300 text-xs font-medium">자세히 보기 →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-2xl mx-auto text-center">
+            <h2 class="section-title text-white mb-8">연락처</h2>
+
+            <div class="card p-8 fade-in-up mb-5">
+                <p class="text-gray-300 mb-6 text-base">저와 함께 프로젝트를 진행하고 싶으신가요?</p>
+                <a href="https://www.naver.com" target="_blank" class="cta-button">네이버 방문하기</a>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 fade-in-up">
+                <div class="card p-5">
+                    <div class="text-2xl mb-2">📧</div>
+                    <p class="text-gray-400 text-xs">이메일</p>
+                    <p class="text-violet-400 text-sm font-medium">Contact via Naver</p>
+                </div>
+                <div class="card p-5">
+                    <div class="text-2xl mb-2">🔗</div>
+                    <p class="text-gray-400 text-xs">웹사이트</p>
+                    <a href="https://www.naver.com" target="_blank" class="text-violet-400 text-sm font-medium hover:text-violet-300">www.naver.com</a>
+                </div>
+                <div class="card p-5">
+                    <div class="text-2xl mb-2">👋</div>
+                    <p class="text-gray-400 text-xs">소개</p>
+                    <p class="text-violet-400 text-sm font-medium">항상 열려있습니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (fixed) -->
+    <footer class="py-4 px-6 md:px-12 text-center text-gray-500 text-sm">
+        <p>© 2026 양지훈. All rights reserved.</p>
+    </footer>
+
+    <!-- Scroll-to-top button -->
+    <button id="scroll-top-btn" title="맨 위로">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M5 15l7-7 7 7"/>
+        </svg>
+    </button>
+
+    <script>
+        const nav = document.getElementById('main-nav');
+        const scrollTopBtn = document.getElementById('scroll-top-btn');
+
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('nav-scrolled', window.scrollY > 50);
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        const typingText = document.getElementById('typing-text');
+        const texts = ['웹 개발자', 'Web Developer', 'Backend Developer'];
+        let textIndex = 0, charIndex = 0, isDeleting = false;
+
+        function typeText() {
+            const currentText = texts[textIndex];
+            if (!isDeleting && charIndex < currentText.length) {
+                typingText.textContent += currentText[charIndex++];
+                setTimeout(typeText, 100);
+            } else if (isDeleting && charIndex > 0) {
+                typingText.textContent = currentText.substring(0, --charIndex);
+                setTimeout(typeText, 50);
+            } else if (!isDeleting && charIndex === currentText.length) {
+                isDeleting = true;
+                setTimeout(typeText, 2000);
+            } else {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(typeText, 500);
+            }
+        }
+        typeText();
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
